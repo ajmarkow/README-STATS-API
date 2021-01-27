@@ -48,5 +48,38 @@ functions:
     handler: create.main
     events:
       - http:
-          path: readme_grade
+          path: grade
           method: post
+  get:
+    # API Gateway endpoint for get function.
+    #path: grades/{id}
+    # method: GET request
+    handler: get.main # Function to be called
+    events:
+      - http:
+          path: grades/{id}
+          method: get
+  list:
+    #Endpoint for list
+    #path is /grades
+    #method: GET
+    handler: list.main
+    events:
+      - http:
+          path: grades
+          method: get
+  update:
+    #API Gateway endpoint for update
+    handler: update.main
+    events:
+      - http:
+          path: grades/{id}
+          method: put
+
+custom:
+  newRelic:
+    accountId: 2972094
+    apiKey: process.env.NEW_RELIC_API_KEY
+    enableExtension: true
+    enableIntegration: true
+>>>>>>> 9e403a2 (Add lambdas + api gateway endpoints for read, update, and list.  Fix exposed New Relic API Key.)

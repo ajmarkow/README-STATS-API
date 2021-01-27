@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
+import handler from "./libs/handler-lib";
 import * as uuid from "uuid";
-import AWS from "aws-sdk";
+import dynamoDb from "./libs/dynamodb-lib";
 import repos from 'repos';
 
 const options = {
@@ -20,8 +21,8 @@ async function getGrades(repoSlug) {
 		return repositoryScore.json();
 };
 
-export async function main(event, context){
-//Request body is parsed as a json string
+export const main = handler(async (event, context) => {
+	//Request body is parsed as a json string
 	let listOfRepos = [];
 	let usernameParameter = event["queryStringParameters"]["username"];
 	const data = JSON.parse(event.body);
@@ -36,6 +37,7 @@ export async function main(event, context){
 	returned_repos.forEach((item) => repositoriesScores.push(getGrades(item)));
 	let resolvedScores = await Promise.all(repositoriesScores).then(response => JSON.stringify(response));
 	const params = {
+<<<<<<< HEAD
     TableName: process.env.TableName,
     Item: {
       //Attributes of item being created by api
@@ -46,19 +48,9 @@ export async function main(event, context){
       gradeId: uuid.v1(), //unique id for each
       attachment: data.attachment,
       createdAt: Date.now(),
-    },
-  };
-
-	try {
-		await dynamoDb.put(params).promise();
-		return {
-			statusCode:200,
-			body: JSON.stringify(params.Item)
-			};
-     } catch (e) {
-		return {
-			statusCode:500,
-			body:JSON.stringify({error: e.message})
-			};
-		}
-}
+    }
+  };``
+	await dynamoDb.put(params);
+	
+	return params.Item;
+});
