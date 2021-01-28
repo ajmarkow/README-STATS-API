@@ -1,4 +1,3 @@
-import { DynamoDB } from "aws-sdk";
 import handler from "./libs/handler-lib";
 import DynamoDb from "./libs/dynamodb-lib";
 
@@ -24,4 +23,4 @@ export const main = handler(async (event, context) => {
   await DynamoDb.update(params);
 
   return { status: true };
-})
+});

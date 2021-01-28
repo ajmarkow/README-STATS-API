@@ -8,7 +8,6 @@ const options = {
   token: process.env.GIT_TOKEN,
 };
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 function addResponse(response, array) {
   response.forEach((item) =>
     array.push(item.full_name));
@@ -51,6 +50,5 @@ export const main = handler(async (event, context) => {
     }
   };``
 	await dynamoDb.put(params);
-	
 	return params.Item;
 });

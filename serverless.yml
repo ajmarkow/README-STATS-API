@@ -48,7 +48,7 @@ functions:
     handler: create.main
     events:
       - http:
-          path: grade
+          path: grades
           method: post
   get:
     # API Gateway endpoint for get function.
@@ -75,6 +75,14 @@ functions:
       - http:
           path: grades/{id}
           method: put
+  delete:
+    # Endpoint to call delete and delete dynamodb entry.
+    handler: delete.main
+    events:
+      - http:
+          path: grades/{id}
+          method: delete
+
 
 custom:
   newRelic:
