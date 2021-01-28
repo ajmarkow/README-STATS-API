@@ -1,3 +1,16 @@
 {
+<<<<<<< HEAD
 	"body": "{\"attachment\":\"hello.jpg\"}"
 }
+||||||| parent of 2b9ce6b (Update lambda logic to use cognito user info from event object.)
+	"body": "{\"attachment\":\"hello.jpg\"}"
+}
+=======
+"body": "{\"attachment\":\"hello.jpg\"}",
+"requestContext": {
+"identity": {
+"cognitoIdentityId": "USER-SUB-1234"
+}
+}
+}
+>>>>>>> 2b9ce6b (Update lambda logic to use cognito user info from event object.)

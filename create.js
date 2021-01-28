@@ -36,19 +36,18 @@ export const main = handler(async (event, context) => {
 	returned_repos.forEach((item) => repositoriesScores.push(getGrades(item)));
 	let resolvedScores = await Promise.all(repositoriesScores).then(response => JSON.stringify(response));
 	const params = {
-<<<<<<< HEAD
-    TableName: process.env.TableName,
-    Item: {
-      //Attributes of item being created by api
-      githubUsername: `${usernameParameter}`,
-      userId: "123", //author user id
-      repositories: `${repositoriesAsJSON}`,
-      repositories_scores: `${resolvedScores}`,
-      gradeId: uuid.v1(), //unique id for each
-      attachment: data.attachment,
-      createdAt: Date.now(),
-    }
-  };``
+		TableName: process.env.TableName,
+		Item: {
+			//Attributes of item being created by api
+			githubUsername: `${usernameParameter}`,
+			userId: event.requestContext.identity.cognitoIdentityId, //author user id
+			repositories: `${repositoriesAsJSON}`,
+			repositoriesScores: `${resolvedScores}`,
+			gradeId: uuid.v1(), //unique id for each
+			attachment: data.attachment,
+			createdAt: Date.now(),
+		},
+	};
 	await dynamoDb.put(params);
 	return params.Item;
 });

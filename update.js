@@ -7,7 +7,7 @@ export const main = handler(async (event, context) => {
     TableName: process.env.tableName,
     // Key object below is providing partition + sort key to update
     Key: {
-      userId: "123",
+      userId: event.requestContext.identity.cognitoIdentityId,
       gradeId: event.pathParameters.id,
     },
     //Update Expression tells dynamodb what to change
