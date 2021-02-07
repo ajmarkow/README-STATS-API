@@ -44,14 +44,6 @@ iamRoleStatements:
       - "arn:aws:dynamodb:us-west-2:*:*"
 
 functions:
-  create:
-    handler: create.main
-    events:
-      - http:
-          path: grades
-          method: post
-          cors: true
-          authorizer: aws_iam
   get:
     # API Gateway endpoint for get function.
     #path: grades/{id}
@@ -59,40 +51,9 @@ functions:
     handler: get.main # Function to be called
     events:
       - http:
-          path: grades/{id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-  list:
-    #Endpoint for list
-    #path is /grades
-    #method: GET
-    handler: list.main
-    events:
-      - http:
           path: grades
           method: get
           cors: true
-          authorizer: aws_iam
-  update:
-    #API Gateway endpoint for update
-    handler: update.main
-    events:
-      - http:
-          path: grades/{id}
-          method: put
-          cors: true
-          authorizer: aws_iam
-  delete:
-    # Endpoint to call delete and delete dynamodb entry.
-    handler: delete.main
-    events:
-      - http:
-          path: grades/{id}
-          method: delete
-          cors: true
-          authorizer: aws_iam
-
 resources:
   - ${file(resources/api-gateway-errors.yml)}
   
