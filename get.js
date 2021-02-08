@@ -7,7 +7,7 @@ const options = {
 };
 
 function addResponse(response, array) {
-  response.forEach((item) =>
+	response.forEach((item) =>
     array.push(item.full_name));
     return array;
 };
@@ -20,6 +20,7 @@ async function getGrades(repoSlug) {
 
 export const main = handler(async (event, context) => {
 	//Request body is parsed as a json string
+	let _ = require('lodash');
 	let listOfRepos = [];
 	let usernameParameter = event["queryStringParameters"]["username"];
 	let returned_repos = await repos([`${usernameParameter}`], options)
@@ -31,10 +32,10 @@ export const main = handler(async (event, context) => {
 	let repositoriesScores = [];
 	returned_repos.forEach((item) => repositoriesScores.push(getGrades(item)));
 	let resolvedScores = await Promise.all(repositoriesScores);
+	let repoAndScoreObject = _.zipObject(returned_repos, resolvedScores);
 	let apiResponse = {
 		'githubUsername': `${usernameParameter}`,
-		'githubRepositories': returned_repos,
-		'readmeGrades': resolvedScores,
+		'githubRepositories': repoAndScoreObject
 	};
 	return apiResponse;
 });
