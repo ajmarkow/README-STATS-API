@@ -1,10 +1,11 @@
-import fetch from "node-fetch";
 import handler from "./libs/handler-lib";
 import repos from 'repos';
+
 
 const options = {
   token: process.env.GIT_TOKEN,
 };
+
 
 function addResponse(response, array) {
 	response.forEach((item) =>
@@ -13,14 +14,46 @@ function addResponse(response, array) {
 };
 
 async function getGrades(repoSlug) {
+	const Octokit = require("@octokit/rest");
+	const octokit = new Octokit();
+	octokit.authenticate({
+		type: 'basic',
+		username: 'ajmarkow',
+		password: process.env.PRIVATE_KEY
+	});
 	//https://api.github.com/repos/ajmarkow/woodlandmist/community/profile
-		let repositoryScore = await fetch(`https://api.github.com/repos/${repoSlug}/community/profile`,{headers: {'Authorization':`token ${process.env.GIT_TOKEN}`}});
-		return repositoryScore.json();
+	let splitSlug = repoSlug.split("/");
+	let username = splitSlug[0];
+	console.log(username);
+	let repo = splitSlug[1];
+		console.log(repo);
+		try {
+      await octokit.repos.getReadme({
+        'owner': username,
+        'repo': repo,
+      });
+			return {
+				'repository': repoSlug,
+				'readmePresent?': true
+			};
+		} catch (error) {
+      if (error.status === 404) {
+				return {
+				'repository': repoSlug,
+				'readmePresent?': false
+			};
+      } else {
+				// handle connection errors
+				return {
+				'repository': repoSlug,
+				'readmePresent?': false
+			};
+      }
+    }
 };
 
 export const main = handler(async (event, context) => {
 	//Request body is parsed as a json string
-	let _ = require('lodash');
 	let listOfRepos = [];
 	let usernameParameter = event["queryStringParameters"]["username"];
 	let returned_repos = await repos([`${usernameParameter}`], options)
@@ -32,10 +65,10 @@ export const main = handler(async (event, context) => {
 	let repositoriesScores = [];
 	returned_repos.forEach((item) => repositoriesScores.push(getGrades(item)));
 	let resolvedScores = await Promise.all(repositoriesScores);
-	let repoAndScoreObject = _.zipObject(returned_repos, resolvedScores);
 	let apiResponse = {
 		'githubUsername': `${usernameParameter}`,
-		'githubRepositories': repoAndScoreObject
+		'githubRepositories': returned_repos,
+		'githubScores': resolvedScores
 	};
 	return apiResponse;
 });

@@ -1,5 +1,5 @@
 {
-  "pathParameters":{
+  "queryStringParameters":{
     "username": "ajmarkow"
   }
 }
